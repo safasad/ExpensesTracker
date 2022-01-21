@@ -1,45 +1,44 @@
+import React, { useState } from "react";
 // import ExpenseItem from "./Components/ExpenseItemComponent/ExpenseItem";
-import Expenses from './Components/EXPENSES/ExpenseItemComponent/expenses'
-import NewExpenses from './Components/NewExpenses/NewExpense';
-import ExpensesFilter from './Components/Filter/expenseFilter'
+import Expenses from "./Components/EXPENSES/ExpenseItemComponent/expenses";
+import NewExpenses from "./Components/NewExpenses/NewExpense";
+// import ExpensesFilter from "./Components/Filter/expenseFilter";
+let prevExpenses = [];
+
+/**
+ * @purpose - Read all expenses from local storage (if exists)
+ */
+const readFromLocalStorage = () => {
+  const parsedData = JSON.parse(localStorage.getItem("expenses"));
+  if (parsedData) {
+    // Convert the date from string to Date object
+    parsedData.forEach((expense) => {
+      expense.date = new Date(expense.date)
+    });
+
+    prevExpenses = [...parsedData];
+  }
+};
 
 function App() {
-  const expenses = [
-    {
-      id: "e1",
-      title: "Toilet Paper",
-      amount: 94.12,
-      date: new Date(2020, 7, 14),
-    },
-    { id: "e2", title: "New TV", amount: 799.49, date: new Date(2021, 2, 12) },
-    {
-      id: "e3",
-      title: "Car Insurance",
-      amount: 294.67,
-      date: new Date(2021, 2, 28),
-    },
-    {
-      id: "e4",
-      title: "New Desk (Wooden)",
-      amount: 450,
-      date: new Date(2021, 11, 12),
-    },
-  ];
+  // Read from local storage all saved expenses
+  readFromLocalStorage();
+  let [expenses, setExpenses] = useState(prevExpenses);
 
-  const expensesHandler = (expense)=>{
-
-  }
-
+  const expensesHandler = (expense) => {
+    //to make new array with new expense + old array
+    setExpenses((prevExpenses) => {
+      return [expense, ...prevExpenses];
+    });
+  };
 
   return (
     <div className="App">
-      <NewExpenses onAddExpense={expensesHandler}  />
-     
+      <NewExpenses onAddExpense={expensesHandler} />
+
       <Expenses expenses={expenses} />
     </div>
   );
 }
 
 export default App;
-
-

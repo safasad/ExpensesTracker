@@ -20,26 +20,22 @@ const ExpenseForm = (props) => {
   };
 
   const submitHandler = (event) => {
-      event.preventDefault();
+    event.preventDefault();
 
-      const expenseData = {
-        title: enteredTitle,
-        amount: enteredAmount,
-        date: new Date(enteredDate),
-      };
+    const expenseData = {
+      title: enteredTitle,
+      amount: +enteredAmount,
+      date: new Date(enteredDate),
+    };
 
-      
+    saveExpenseDataToLocalStorage(expenseData);
 
-      props.onSaveExpenseData(expenseData);
+    props.onSaveExpenseData(expenseData);
 
-      setEnteredTitle('');
-      setEnteredAmount('');
-      setEnteredDate('');
-
-  }
-
-
-
+    setEnteredTitle("");
+    setEnteredAmount("");
+    setEnteredDate("");
+  };
 
   return (
     <form onSubmit={submitHandler}>
@@ -64,10 +60,26 @@ const ExpenseForm = (props) => {
         </div>
       </div>
       <div className="new-expense__actions">
-        <button>Add Expense</button>
+        <button onClick={props.onstopEditing}>Cancel</button>
+        <button type="submit">Add Expense</button>
       </div>
     </form>
   );
 };
 
+/* Handler function*/
+/**
+ * @purpose - Add the new expense to the local storage
+ */
+const saveExpenseDataToLocalStorage = (expenseData) => {
+  // Save the data into the localStorage
+  const savedExpenses = JSON.parse(localStorage.getItem("expenses"));
+
+  if (savedExpenses) {
+    savedExpenses.push(expenseData);
+    localStorage.setItem("expenses", JSON.stringify(savedExpenses));
+  } else {
+    localStorage.setItem("expenses", JSON.stringify([expenseData]));
+  }
+};
 export default ExpenseForm;
